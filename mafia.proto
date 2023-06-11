@@ -8,6 +8,52 @@ service Mafia {
     rpc DisconectRoom(SingUp) returns (Empty) {}
     rpc ConnectRoom(SingUp) returns (SingUpResponse) {}
     rpc DeadSignal(SingUp) returns (Empty) {}
+    rpc CityVoting(CityVotingRequest) returns (CityVotingResponse) {}
+    rpc KillCitizen(KillCitizenRequest) returns (Empty) {}
+    rpc CheckCitizen(CheckCitizenRequest) returns (Empty) {}
+    rpc GetNightResult(GetNightResultRequest) returns (GetNightResultResponse) {}
+    rpc GetRole(SingUp) returns (GetRoleResponse) {}
+}
+
+message GetRoleResponse {
+    string role = 1;
+}
+
+message CityVotingRequest {
+    string game_id = 1;
+    string name = 2;
+    string vote = 3;
+}
+
+message CityVotingResponse {
+    bool is_end = 1;
+    string end = 2;
+    repeated string city = 3;
+}
+
+message KillCitizenRequest {
+    string game_id = 1;
+    string name = 2;
+}
+
+message CheckCitizenRequest {
+    string game_id = 1;
+    string name = 2;
+}
+
+message CheckCitizenResponse {
+    bool result = 1;
+}
+
+message GetNightResultRequest {
+    string name = 1;
+    string game_id = 2;
+}
+
+message GetNightResultResponse {
+    bool is_end = 1;
+    string end = 2;
+    repeated string city = 3;
 }
 
 message SingUp {
@@ -25,15 +71,8 @@ message SubscribeRequest {
     string game_id = 2;
 }
 
-message Exite {
-    bool dead = 1;
-    string name = 2;
-}
-
 message SubscribeResponse {
-    bool connecte = 1;
-    string name = 2;
-    Exite exite = 3;
+    string msg = 1;
 }
 
 message Empty {}

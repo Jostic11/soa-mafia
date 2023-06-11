@@ -13,21 +13,20 @@ class UnaryClient:
         self.chanel = grpc.insecure_channel(f'{self.host}:{self.server_port}')
         self.stub = mafia_pb2_grpc.MafiaStub(self.chanel)
         self.room_users = []
-        self.role
+        self.role = None
 
     def subscribe_to_notifications(self):
         self.notifications = grpc.insecure_channel(f'{self.host}:{self.server_port}')
         for notification in self.stub.SubscribeToNotifications(
-                        mafia_pb2.SubscribeRequest(name=self.name, game_id=self.game_id)):
-            if notification.exite.dead:
+                        mafia_pb2.SubscribeRequest(name=self.name, game_id=self.game_id)):            
+            if (notification.msg == f"__DEAD__ {self.name}"):
                 return
-            if notification.connecte:
-                self.room_users.append(notification.name)
-                print(f"User {notification.name} connected the game")
-            else:
-                if notification.name in self.room_users:
-                    self.room_users.remove(notification.name)
-                print(f"User {notification.name} disconected the game")
+            if notification.msg.split()[0] == "__DEAD__":
+                continue
+            if notification.msg.split()[0] == "__ADD__":
+                if notification.msg.split()[2] not in self.room_users:
+                    self.room_users.append(notification.msg.split()[2])
+            print(notification.msg)
 
     def disconect_game(self):
         print("You left the lobby")
@@ -39,6 +38,43 @@ class UnaryClient:
         self.room_users.append(self.name)
         self.game_id = response.game_id
         print(f"You have connected to the room {response.game_id}")
+
+    def run_night(self, city):
+        if self.role is not None:
+            print("The city is falling asleep")
+            if self.role == "mafia":
+                print("Choose the player you want to kill:")
+                menu = TerminalMenu(city)
+                res = menu.show()
+                self.stub.KillCitizen(mafia_pb2.KillCitizenRequest(game_id=self.game_id, name=city[res]))
+            if self.role == "commissar":
+                print("Select the player you would like to test:")
+                menu = TerminalMenu(city)
+                res = menu.show()
+                self.stub.CheckCitizen(mafia_pb2.CheckCitizenRequest(game_id=self.game_id, name=city[res]))
+            response = self.stub.GetNightResult(mafia_pb2.GetNightResultRequest(game_id=self.game_id))
+            if response.is_end:
+                tprint(f"{response.end}")
+                sys.exit()
+            city = response.city
+            self.run_day(city)
+
+    def run_day(self, city):
+        if self.role is not None:
+            print("The city is waking up")
+            print("Vote for who you think is the mafia:")
+            menu = TerminalMenu(city)
+            res = menu.show()
+            response = self.stub.CityVoting(mafia_pb2.CityVotingRequest(game_id=self.game_id, name=self.name, vote=city[res]))
+            if response.is_end:
+                tprint(f"{response.end}")
+                sys.exit()
+            city = response.city
+            if self.name not in city:
+                self.role = None
+                print("You were killed by voting")
+            self.run_night(city)
+
 
     def register_user(self, name, game_id):
         self.name = name
@@ -54,11 +90,19 @@ class UnaryClient:
             if player == self.name:
                 continue
             print(f"Player {player} already in the lobby")
-        print("After connecting 4 players, the game will automatically start")
+        if len(self.room_users) < 4:
+            print("After connecting 4 players, the game will automatically start")
+        else:
+            response = self.stub.GetRole(mafia_pb2.SingUp(name=self.name, game_id=game_id))
+            self.role = response.role
+            self.run_day(self.room_users)
         while True:
-            menu = TerminalMenu(["List of participants in the room", 
-                                 "Change the room",
-                                 "Exit the game"])
+            if len(self.room_users) == 4:
+                response = self.stub.GetRole(mafia_pb2.SingUp(name=self.name, game_id=game_id))
+                self.role = response.role
+                self.run_day(self.room_users)
+            choice = ["List of participants in the room", "Change the room", "Exit the game", "Refresh"]
+            menu = TerminalMenu(choice)
             res = menu.show()
             if res == 0:
                 print(f"There are currently {len(self.room_users)} users in the lobby")
@@ -68,13 +112,15 @@ class UnaryClient:
                 print("Enter the ID of the game you want to connect to, or leave this field empty, we will create a game for you")
                 game_id = str(input())
                 self.disconect_game()
-                self.connect_game(game_id)
-            else:
+                response = self.connect_game(game_id)
+            elif res == 2:
                 self.stub.DeadSignal(mafia_pb2.SingUp(name=self.name, game_id=game_id))
                 print("You are leaving the game, goodbye!")
                 self.disconect_game()
                 new_thread.join()
                 sys.exit()
+            else:
+                continue
 
 
 if __name__ == "__main__":

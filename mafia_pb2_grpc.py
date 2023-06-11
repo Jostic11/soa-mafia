@@ -39,6 +39,31 @@ class MafiaStub(object):
                 request_serializer=mafia__pb2.SingUp.SerializeToString,
                 response_deserializer=mafia__pb2.Empty.FromString,
                 )
+        self.CityVoting = channel.unary_unary(
+                '/mafia.Mafia/CityVoting',
+                request_serializer=mafia__pb2.CityVotingRequest.SerializeToString,
+                response_deserializer=mafia__pb2.CityVotingResponse.FromString,
+                )
+        self.KillCitizen = channel.unary_unary(
+                '/mafia.Mafia/KillCitizen',
+                request_serializer=mafia__pb2.KillCitizenRequest.SerializeToString,
+                response_deserializer=mafia__pb2.Empty.FromString,
+                )
+        self.CheckCitizen = channel.unary_unary(
+                '/mafia.Mafia/CheckCitizen',
+                request_serializer=mafia__pb2.CheckCitizenRequest.SerializeToString,
+                response_deserializer=mafia__pb2.Empty.FromString,
+                )
+        self.GetNightResult = channel.unary_unary(
+                '/mafia.Mafia/GetNightResult',
+                request_serializer=mafia__pb2.GetNightResultRequest.SerializeToString,
+                response_deserializer=mafia__pb2.GetNightResultResponse.FromString,
+                )
+        self.GetRole = channel.unary_unary(
+                '/mafia.Mafia/GetRole',
+                request_serializer=mafia__pb2.SingUp.SerializeToString,
+                response_deserializer=mafia__pb2.GetRoleResponse.FromString,
+                )
 
 
 class MafiaServicer(object):
@@ -74,6 +99,36 @@ class MafiaServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CityVoting(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def KillCitizen(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CheckCitizen(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetNightResult(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetRole(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MafiaServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -101,6 +156,31 @@ def add_MafiaServicer_to_server(servicer, server):
                     servicer.DeadSignal,
                     request_deserializer=mafia__pb2.SingUp.FromString,
                     response_serializer=mafia__pb2.Empty.SerializeToString,
+            ),
+            'CityVoting': grpc.unary_unary_rpc_method_handler(
+                    servicer.CityVoting,
+                    request_deserializer=mafia__pb2.CityVotingRequest.FromString,
+                    response_serializer=mafia__pb2.CityVotingResponse.SerializeToString,
+            ),
+            'KillCitizen': grpc.unary_unary_rpc_method_handler(
+                    servicer.KillCitizen,
+                    request_deserializer=mafia__pb2.KillCitizenRequest.FromString,
+                    response_serializer=mafia__pb2.Empty.SerializeToString,
+            ),
+            'CheckCitizen': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckCitizen,
+                    request_deserializer=mafia__pb2.CheckCitizenRequest.FromString,
+                    response_serializer=mafia__pb2.Empty.SerializeToString,
+            ),
+            'GetNightResult': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetNightResult,
+                    request_deserializer=mafia__pb2.GetNightResultRequest.FromString,
+                    response_serializer=mafia__pb2.GetNightResultResponse.SerializeToString,
+            ),
+            'GetRole': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetRole,
+                    request_deserializer=mafia__pb2.SingUp.FromString,
+                    response_serializer=mafia__pb2.GetRoleResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -194,5 +274,90 @@ class Mafia(object):
         return grpc.experimental.unary_unary(request, target, '/mafia.Mafia/DeadSignal',
             mafia__pb2.SingUp.SerializeToString,
             mafia__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CityVoting(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mafia.Mafia/CityVoting',
+            mafia__pb2.CityVotingRequest.SerializeToString,
+            mafia__pb2.CityVotingResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def KillCitizen(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mafia.Mafia/KillCitizen',
+            mafia__pb2.KillCitizenRequest.SerializeToString,
+            mafia__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CheckCitizen(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mafia.Mafia/CheckCitizen',
+            mafia__pb2.CheckCitizenRequest.SerializeToString,
+            mafia__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetNightResult(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mafia.Mafia/GetNightResult',
+            mafia__pb2.GetNightResultRequest.SerializeToString,
+            mafia__pb2.GetNightResultResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetRole(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mafia.Mafia/GetRole',
+            mafia__pb2.SingUp.SerializeToString,
+            mafia__pb2.GetRoleResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
