@@ -1,0 +1,5 @@
+grpcio==1.54.2
+protobuf==4.23.2
+grpcio-tools==1.54.2
+simple-term-menu==1.6.1
+art==5.9

@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package mafia;
+
+service Mafia {
+    rpc GoSingUp(SingUp) returns (SingUpResponse) {}
+    rpc SubscribeToNotifications (SubscribeRequest) returns (stream SubscribeResponse) {}
+    rpc DisconectRoom(SingUp) returns (Empty) {}
+    rpc ConnectRoom(SingUp) returns (SingUpResponse) {}
+    rpc DeadSignal(SingUp) returns (Empty) {}
+}
+
+message SingUp {
+    string name = 1;
+    string game_id = 2;
+}
+
+message SingUpResponse {
+    string game_id = 1;
+    repeated string players = 2;
+}
+
+message SubscribeRequest {
+    string name = 1;
+    string game_id = 2;
+}
+
+message Exite {
+    bool dead = 1;
+    string name = 2;
+}
+
+message SubscribeResponse {
+    bool connecte = 1;
+    string name = 2;
+    Exite exite = 3;
+}
+
+message Empty {}
