@@ -109,7 +109,7 @@ class MafiaService(mafia_pb2_grpc.MafiaServicer):
                             self.games_ans[request.game_id] = name
                     all = sorted(all)
                     logger.log(level=logging.WARNING, msg=all)
-                    if all[-1] != all[-2]:
+                    if (len(all) == 1) or (all[-1] != all[-2]):
                         killed = self.games_ans[request.game_id]
                         self.games_alive[request.game_id].remove(killed)
                         self.notifications[self.users_room[request.name]].append(f"by voting, a player {self.games_ans[request.game_id]} was kicked out")
